@@ -1,0 +1,794 @@
+#:kivy 1.0.9
+
+
+# <Button>:
+#     size_hint: 
+<LeftLayout>:
+    canvas.before:
+        
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+
+<MiddleLayout>:
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+
+
+<RightLayout>:
+    canvas.before:
+        
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+
+<LoadButton>:
+    canvas.before:
+        
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+
+<VideoCanvas>:
+    size_hint: (1, None)
+    height: 300
+
+<LabelGrid>:
+    canvas.before:
+    
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    font_size: 12
+
+<LabelTitle>:
+    canvas.before:
+    
+        Color:
+            rgba: .5, .5, .5, .4
+        
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    font_size: 12
+
+<WindowShape>:
+    spacing: 10
+    orientation: 'horizontal'
+
+    LeftLayout:
+        id: left
+        # Label:
+        #     # id: path_label
+        #     # pos: -root.width/2 + 75, root.height/2 - 10
+        #     pos: 10, root.height- 30
+        #     size_hint: (None, None)
+        #     height: 30
+        #     width: root.width / 2
+        #     font_size: 16
+        #     text: "Enter video path"
+        #     halign: "justify"
+        
+        # TextInput:
+        #     id: path_input
+        #     multiline: False
+        #     # size_hint: (1, 0.05)
+        #     size_hint: (1, None)
+        #     pos: 0, root.height - 60
+        #     height: 30
+        #     width: 100
+        #     text: "C:/Users/ruben/Documents/Github/openpose/examples/media/011_1.mp4"
+         
+        LoadButton:
+            id: load_button
+            size_hint: (None, None)
+            height: 30
+            width: 100
+            pos: 235, 330
+        
+        ExportButton:
+            id: export_button
+            size_hint: (None, None)
+            height: 30
+            width: 100
+            pos: 5, 330
+        
+        Files:
+            canvas.before:
+        
+                Color:
+                    rgba: .5, .5, .5, .4
+                
+                Line:
+                    width: 1
+                    rectangle: self.x, self.y, self.width, self.height
+            id: files
+
+            size_hint: (None, None)
+            height: 400
+            width: 1366 / 4
+            pos: 0, root.height - 400
+
+    
+
+    MiddleLayout:
+        id: middle
+
+        VideoCanvas:
+            canvas.before:
+            
+                Color:
+                    rgba: .5, .5, .5, .4
+                
+                Line:
+                    width: 1
+                    rectangle: self.x, self.y, self.width, self.height
+
+            id: video_canvas
+            size_hint: (None, None)
+            width: 1024 #ratio of 1.7'
+            height: 576
+            pos: 1366/4, root.height - self.height
+        
+        Description:
+            canvas.before:
+            
+                Color:
+                    rgba: .5, .5, .5, .4
+                
+                Line:
+                    width: 1
+                    rectangle: self.x, self.y, self.width, self.height
+            id: description
+            # orientation: "vertical"
+            cols: 2
+            size_hint: (None, None)
+            #height: 130
+            width: 1366/4
+            pos: 0, 192
+            
+            LabelGrid:
+                id: video_name_label
+                text:"Name of video: "
+            
+            LabelGrid:
+                id: video_name
+            
+            LabelGrid:
+                id: total_frames_label
+                text: "Total frames: "
+            LabelGrid:
+                id: total_frames
+            LabelGrid:
+                id: video_length_label
+                text: "Video length: "
+            LabelGrid:
+                id: video_length
+            LabelGrid:
+                id: current_frame_label
+                text: "Current Frame: "
+            LabelGrid:
+                id: current_frame
+
+        BackwardButton:
+            id: backward
+
+        PlayButton:
+            id: play
+
+        PauseButton:
+            id: pause
+
+        ForwardButton:
+            id: forward
+        
+        JointData:
+            canvas.before:
+            
+                Color:
+                    rgba: .5, .5, .5, .4
+                
+                Line:
+                    width: 1
+                    rectangle: self.x, self.y, self.width, self.height
+            id: joint_data
+            size_hint: (None, None)
+            pos: 0, 0 #same format as bottons
+            cols: 26
+            # rows: 3
+            width: 1366
+            height: 150
+
+            LabelTitle:
+                text: ""
+                
+            LabelTitle:
+                id: nose_label
+                text: "Nose"
+                
+            LabelTitle:
+                id: neck_label
+                text: "Neck"
+                
+            LabelTitle:
+                id: rshoulder_label
+                text: "RShoulder"
+                
+            LabelTitle:
+                id: relbow_label
+                text: "RElbow"
+                
+            LabelTitle:
+                id: rwrist_label
+                text: "RWrist"
+                
+            LabelTitle:
+                id: lshoulder_label
+                text: "LShoulder"
+                
+            LabelTitle:
+                id: lelbow_label
+                text: "LElbow"
+                
+            LabelTitle:
+                id: lwrist_label
+                text: "LWrist"
+                
+            LabelTitle:
+                id: midhip_label
+                text: "Midhip"
+                
+            LabelTitle:
+                id: rhip_label
+                text: "RHip"
+                
+            LabelTitle:
+                id: rknee_label
+                text: "RKnee"
+                
+            LabelTitle:
+                id: rankle_label
+                text: "RAnkle"
+                
+            LabelTitle:
+                id: lhip_label
+                text: "LHip"
+                
+            LabelTitle:
+                id: lknee_label
+                text: "LKnee"
+                
+            LabelTitle:
+                id: lankle_label
+                text: "LAnkle"
+                
+            LabelTitle:
+                id: reye_label
+                text: 'REye'
+                
+            LabelTitle:
+                id: leye_label
+                text: 'LEye'
+                
+            LabelTitle:
+                id: rear_label
+                text: 'REar'
+                
+            LabelTitle:
+                id: lear_label
+                text: 'LEar'
+                
+            LabelTitle:
+                id: lbigtoe_label
+                text: 'LBigToe'
+                
+            LabelTitle:
+                id: lsmalltoe_label
+                text: 'LSmallToe'
+                
+            LabelTitle:
+                id: lheel_label
+                text: 'LHeel'
+                
+            LabelTitle:
+                id: rbigtoe_label
+                text: 'RBigToe'
+                
+            LabelTitle:
+                id: rsmalltoe_label
+                text: 'RSmallToe'
+                
+            LabelTitle:
+                id: rheel_label
+                text: 'RHeel'
+                
+            
+            # values
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    text: "X"
+                LabelGrid:
+                    text: "Y"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: nose_x
+                    text: "456.1"
+                LabelGrid:
+                    id: nose_y
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: neck_x
+                    text: "456.1"
+                LabelGrid:
+                    id: neck_y
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rshoulder_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rshoulder_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: relbow_x
+                    text: "456.1"
+                LabelGrid:
+                    id: relbow_y
+                    text: "684.5"
+                
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rwrist_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rwrist_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lshoulder_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lshoulder_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lelbow_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lelbow_y
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lwrist_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lwrist_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: midhip_x
+                    text: "456.1"
+                LabelGrid:
+                    id: midhip_y
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rhip_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rhip_y
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rknee_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rknee_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rankle_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rankle_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lhip_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lhip_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lknee_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lknee_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lankle_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lankle_y
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: reye_x
+                    text: "456.1"
+                LabelGrid:
+                    id: reye_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: leye_x
+                    text: "456.1"
+                LabelGrid:
+                    id: leye_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rear_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rear_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lear_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lear_y
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lbigtoe_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lbigtoe_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lsmalltoe_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lsmalltoe_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lheel_x
+                    text: "456.1"
+                LabelGrid:
+                    id: lheel_y
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rbigtoe_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rbigtoe_y
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rsmalltoe_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rsmalltoe_y
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rheel_x
+                    text: "456.1"
+                LabelGrid:
+                    id: rheel_y
+                    text: "684.5"
+
+
+            # real values
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    text: "X"
+                LabelGrid:
+                    text: "Y"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: nose_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: nose_y_real
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: neck_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: neck_y_real
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rshoulder_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rshoulder_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: relbow_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: relbow_y_real
+                    text: "684.5"
+                
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rwrist_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rwrist_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lshoulder_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lshoulder_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lelbow_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lelbow_y_real
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lwrist_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lwrist_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: midhip_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: midhip_y_real
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rhip_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rhip_y_real
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rknee_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rknee_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rankle_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rankle_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lhip_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lhip_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lknee_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lknee_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lankle_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lankle_y_real
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: reye_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: reye_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: leye_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: leye_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rear_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rear_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lear_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lear_y_real
+                    text: "684.5"
+                    
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lbigtoe_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lbigtoe_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lsmalltoe_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lsmalltoe_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: lheel_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: lheel_y_real
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rbigtoe_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rbigtoe_y_real
+                    text: "684.5"
+            
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rsmalltoe_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rsmalltoe_y_real
+                    text: "684.5"
+
+            GridLayout:
+                cols: 1
+                LabelGrid:
+                    id: rheel_x_real
+                    text: "456.1"
+                LabelGrid:
+                    id: rheel_y_real
+                    text: "684.5"
+
+
+    # RightLayout:
+    #     id: right
+    #     Label:
+    #         text: "Hey brother"
