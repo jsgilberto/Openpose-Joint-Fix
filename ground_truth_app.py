@@ -15,8 +15,8 @@ import pandas as pd
 import time
 
 # Import Openpose (Windows/Ubuntu/OSX)
-PYOPENPOSE_DIR = "C:/Users/ruben/Documents/Github/openpose/build/python/openpose/Release"
-MODELS_DIR = "C:/Users/ruben/Documents/Github/openpose/models/"
+PYOPENPOSE_DIR = "C:/Programming/github/repos/openpose/build/python/openpose/Release"
+MODELS_DIR = "C:/Programming/github/repos/openpose/models"
 
 sys.path.append(PYOPENPOSE_DIR)
 import pyopenpose as op
@@ -43,7 +43,7 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.utils import escape_markup
 # from kivy.uix.popup import Popup
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.graphics import Color, Rectangle, Line
+from kivy.graphics import Color, Rectangle, Line, Ellipse
 
 
 
@@ -51,6 +51,34 @@ KEYPOINTS = ['nose', 'neck', 'rshoulder', 'relbow', 'rwrist', 'lshoulder','lelbo
             'lwrist', 'midhip', 'rhip', 'rknee', 'rankle', 'lhip', 'lknee', 'lankle',
             'reye', 'leye', 'rear', 'lear', 'lbigtoe', 'lsmalltoe', 'lheel', 'rbigtoe',
             'rsmalltoe', 'rheel']
+
+COLORS = [
+    [255,     0,    85], \
+    [255,     0,     0], \
+    [255,    85,     0], \
+    [255,   170,     0], \
+    [255,   255,     0], \
+    [170,   255,     0], \
+    [85,   255,     0], \
+    [0,   255,     0], \
+    [255,     0,     0], \
+    [0,   255,    85], \
+    [0,   255,   170], \
+    [0,   255,   255], \
+    [0,   170,   255], \
+    [0,    85,   255], \
+    [0,     0,   255], \
+    [255,     0,   170], \
+    [170,     0,   255], \
+    [255,     0,   255], \
+    [85,     0,   255], \
+    [0,     0,   255], \
+    [0,     0,   255], \
+    [0,     0,   255], \
+    [0,   255,   255], \
+    [0,   255,   255], \
+    [0,   255,   255]
+]
 
 params = {
     'model_folder': MODELS_DIR,
@@ -177,6 +205,7 @@ class BackwardButton(Widget):
         # video_canvas.texture = video_canvas.video_to_texture(video_canvas.frames[video_canvas.counter])
         #video_canvas.run_openpose(video_canvas.frames[video_canvas.counter])
         video_canvas.texture = video_canvas.processed_frames[video_canvas.counter]
+        video_canvas.show_points()
         joint_data.display_data()
         current_frame_label = self.parent.parent.ids['current_frame']
         current_frame_label.text = "Current Frame: " + str(video_canvas.counter)
@@ -196,7 +225,9 @@ class ForwardButton(Widget):
             video_canvas.counter += 1
         # video_canvas.run_openpose(video_canvas.frames[video_canvas.counter])
         video_canvas.texture = video_canvas.processed_frames[video_canvas.counter]
+        video_canvas.show_points()
         joint_data.display_data()
+
         # video_canvas.texture = video_canvas.video_to_texture(video_canvas.frames[video_canvas.counter])
         current_frame_label = self.parent.parent.ids['current_frame']
         current_frame_label.text = "Current Frame: " + str(video_canvas.counter)
@@ -311,6 +342,7 @@ class VideoCanvas(ButtonBehavior, Image):
         self.file_selected = ""
         self.current_mouse_pos = None
         Window.bind(mouse_pos=self.mouse_pos)
+        # self.draw_point(50, 50)
 
     # def on_touch_down(self, touch):
     #     # return super().on_touch_down(touch)
@@ -336,6 +368,27 @@ class VideoCanvas(ButtonBehavior, Image):
 
             print(self.real_bodykeypoints[self.counter][0][i][0])
             print(self.real_bodykeypoints[self.counter][0][i][1])
+            self.show_points()
+
+    def show_points(self):
+        self.canvas.after.clear()
+        for i, e in enumerate(self.real_bodykeypoints[self.counter][0]):
+            self.draw_point(e[0], e[1], color=COLORS[i])
+
+    def draw_point(self, x, y, color):
+        ratio_x = self.texture_size[0] / self.size[0]
+        ratio_y = self.texture_size[1] / self.size[1]
+        x = x / ratio_x
+        y = y / ratio_y
+        y = self.size[1] - y
+        x = self.pos[0] + x
+        y = self.pos[1] + y
+        
+        with self.canvas.after:
+            r, g, b = color
+            Color(r / 255, g / 255, b / 255)
+            Ellipse(pos=(x-5, y-5), size=(10, 10))
+
 
     def mouse_pos(self, instance, pos):
 
@@ -360,7 +413,7 @@ class VideoCanvas(ButtonBehavior, Image):
                 self.processed_frames.append(processed_image)
                 self.bodykeypoints.append(bodykp.copy())
                 self.real_bodykeypoints.append(bodykp.copy())
-
+                
                 video_name_label = self.parent.parent.ids['video_name']
                 video_name_label.text = "Loading..." # we can add a split
                 frame_number_label = self.parent.parent.ids['total_frames']
@@ -409,6 +462,7 @@ class VideoCanvas(ButtonBehavior, Image):
         joint_data = self.parent.parent.ids['joint_data']
 
         joint_data.display_data()
+        self.show_points()
         # self.texture = self.video_to_texture(self.frames[self.counter])
 
         current_frame_label = self.parent.parent.ids['current_frame']
