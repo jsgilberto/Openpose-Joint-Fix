@@ -44,41 +44,9 @@ from kivy.utils import escape_markup
 # from kivy.uix.popup import Popup
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.graphics import Color, Rectangle, Line, Ellipse
-
-
-
-KEYPOINTS = ['nose', 'neck', 'rshoulder', 'relbow', 'rwrist', 'lshoulder','lelbow', 
-            'lwrist', 'midhip', 'rhip', 'rknee', 'rankle', 'lhip', 'lknee', 'lankle',
-            'reye', 'leye', 'rear', 'lear', 'lbigtoe', 'lsmalltoe', 'lheel', 'rbigtoe',
-            'rsmalltoe', 'rheel']
-
-COLORS = [
-    [255,     0,    85], \
-    [255,     0,     0], \
-    [255,    85,     0], \
-    [255,   170,     0], \
-    [255,   255,     0], \
-    [170,   255,     0], \
-    [85,   255,     0], \
-    [0,   255,     0], \
-    [255,     0,     0], \
-    [0,   255,    85], \
-    [0,   255,   170], \
-    [0,   255,   255], \
-    [0,   170,   255], \
-    [0,    85,   255], \
-    [0,     0,   255], \
-    [255,     0,   170], \
-    [170,     0,   255], \
-    [255,     0,   255], \
-    [85,     0,   255], \
-    [0,     0,   255], \
-    [0,     0,   255], \
-    [0,     0,   255], \
-    [0,   255,   255], \
-    [0,   255,   255], \
-    [0,   255,   255]
-]
+from buttons import LoadButton, BackwardButton, ForwardButton, PauseButton, PlayButton, ResetRealButton, SetLastButton, ExportButton
+from labels import LabelGrid, LabelTitle
+from constants import KEYPOINTS, COLORS, BODY_PAIRS
 
 params = {
     'model_folder': MODELS_DIR,
@@ -96,8 +64,17 @@ class WindowShape(FloatLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        Window.bind(on_key_down=self._on_keyboard_down)
         print(self.ids)
+    
+    def _on_keyboard_down(self, instance, keyboard, keycode, text, modifiers):
+        backward_btn = self.ids['backward']
+        forward_btn = self.ids['forward']
+        if keycode == 80: # left key:
+            backward_btn.backward(self)
+        elif keycode == 79: # right key
+            forward_btn.forward(self)
+        print(keycode)
 
 class LeftLayout(RelativeLayout):
     def __init__(self, **kwargs):
@@ -131,106 +108,7 @@ class Files(BoxLayout):
 
 class Description(GridLayout):
     pass
-    # def __init__(self, *args, **kwargs):
-    #     super(Description, self).__init__(*args, **kwargs)
-    #     #self.frame_num = None
-    #     pass
 
-class LoadButton(Widget):
-    def __init__(self, **kwargs):
-        super(LoadButton, self).__init__(**kwargs)
-        btn = Button(text='Load Video', size_hint=(None, None), height=30, width=100, pos=(235, 330))
-        btn.bind(on_press=self.load_video)
-        self.add_widget(btn)
-
-    def load_video(self, instance):
-        
-        video_canvas = self.parent.parent.ids['video_canvas']
-        file_selected = self.parent.parent.ids["files"].fichoo.selection[0]
-        
-        if video_canvas.fill_event is not None:
-            return
-        
-        if video_canvas.play_event is not None:
-            video_canvas.play_event.cancel()
-        video_canvas.texture = None
-        video_canvas.frames = []
-        video_canvas.processed_frames = []
-        video_canvas.bodykeypoints = []
-        video_canvas.real_bodykeypoints = []
-        video_canvas.counter = 0
-        video_canvas.cap = cv2.VideoCapture(file_selected)
-        video_canvas.file_selected = file_selected
-        video_canvas.fill_event = Clock.schedule_interval(video_canvas.fill, 1 / 30)
-        # frame_number_label.text += str(len(video_canvas.frames))
-
-
-class PlayButton(Widget):
-    def __init__(self, **kwargs):
-        super(PlayButton, self).__init__(**kwargs)
-        btn = Button(text='Play', size_hint=(1, 1), height=30, width=100, pos=(100 + 654, 192))
-        btn.bind(on_press=self.play)
-        self.add_widget(btn)
-
-    def play(self, instance):
-        video_canvas = self.parent.parent.ids['video_canvas']
-        video_canvas.play_event = Clock.schedule_interval(video_canvas.play, 1 / 30)
-
-
-class PauseButton(Widget):
-    def __init__(self, **kwargs):
-        super(PauseButton, self).__init__(**kwargs)
-        btn = Button(text='Pause', size_hint=(1, 1), height=30, width=100, pos=(200 + 654, 192))
-        btn.bind(on_press=self.pause)
-        self.add_widget(btn)
-
-    def pause(self, instance):
-        video_canvas = self.parent.parent.ids['video_canvas']
-        # cancel play
-        video_canvas.play_event.cancel()
-
-
-class BackwardButton(Widget):
-    def __init__(self, **kwargs):
-        super(BackwardButton, self).__init__(**kwargs)
-        btn = Button(text='Backward', size_hint=(None, 1), height=30, width=100, pos=(0 + 654, 192))
-        btn.bind(on_press=self.backward)
-        self.add_widget(btn)
-
-    def backward(self, instance):
-        video_canvas = self.parent.parent.ids['video_canvas']
-        joint_data = self.parent.parent.ids['joint_data']
-        if video_canvas.counter > 0:
-            video_canvas.counter -= 1
-        # video_canvas.texture = video_canvas.video_to_texture(video_canvas.frames[video_canvas.counter])
-        #video_canvas.run_openpose(video_canvas.frames[video_canvas.counter])
-        video_canvas.texture = video_canvas.processed_frames[video_canvas.counter]
-        video_canvas.show_points()
-        joint_data.display_data()
-        current_frame_label = self.parent.parent.ids['current_frame']
-        current_frame_label.text = "Current Frame: " + str(video_canvas.counter)
-
-
-class ForwardButton(Widget):
-    def __init__(self, **kwargs):
-        super(ForwardButton, self).__init__(**kwargs)
-        btn = Button(text='Forward', size_hint=(1, 1), height=30, width=100, pos=(300 + 654, 192))
-        btn.bind(on_press=self.forward)
-        self.add_widget(btn)
-
-    def forward(self, instance):
-        video_canvas = self.parent.parent.ids['video_canvas']
-        joint_data = self.parent.parent.ids['joint_data']
-        if video_canvas.counter < len(video_canvas.frames) - 1:
-            video_canvas.counter += 1
-        # video_canvas.run_openpose(video_canvas.frames[video_canvas.counter])
-        video_canvas.texture = video_canvas.processed_frames[video_canvas.counter]
-        video_canvas.show_points()
-        joint_data.display_data()
-
-        # video_canvas.texture = video_canvas.video_to_texture(video_canvas.frames[video_canvas.counter])
-        current_frame_label = self.parent.parent.ids['current_frame']
-        current_frame_label.text = "Current Frame: " + str(video_canvas.counter)
 
 class JointData(GridLayout):
     def __init__(self, **kwargs):
@@ -239,6 +117,8 @@ class JointData(GridLayout):
 
     def display_data(self):
         video_canvas = self.parent.parent.ids["video_canvas"]
+        percentage = self.parent.parent.ids["percentage"]
+        percentage.text = str(round((video_canvas.counter / len(video_canvas.processed_frames))* 100, 2)) + "%"
         for i, keypoint in enumerate(KEYPOINTS):
             for j, element in enumerate(["_x", "_y"]):
                 self.parent.parent.ids[keypoint + element].text = str(round(video_canvas.bodykeypoints[video_canvas.counter][0][i][j], 2))           
@@ -253,79 +133,7 @@ class JointData(GridLayout):
                 active_element = label_obj
                 return active_element, element
 
-        
-    
 
-class LabelGrid(Label):
-    pass
-
-class LabelTitle(ButtonBehavior, Label):
-    one_active = False
-    active_label = None
-
-    def __init__(self, **kwargs):
-        super(LabelTitle, self).__init__(**kwargs)
-        self.active = False
-        
-        # self.bind(pos=self.on_pressed)
-        
-    # def on_pressed(self, instance, pos):
-    #     print(instance, pos)
-
-    def on_press(self):
-        # print(instance)
-        # print(pos)
-        # print(LabelTitle.one_active)
-        video_canvas = self.parent.parent.parent.ids['video_canvas']
-        print(video_canvas.mouse_pos)
-        # if there is one label active:
-        if LabelTitle.one_active:
-            if self.active:
-                LabelTitle.one_active = False
-                LabelTitle.active_label = None
-                self.active = False
-                self.markup = False
-                self.text = self.text.replace('[b][color=000000]', "").replace("[/color][/b]", "")
-                self.canvas.before.clear()
-            else:
-                LabelTitle.active_label.active = False
-                LabelTitle.active_label.markup = False
-                LabelTitle.active_label.text = LabelTitle.active_label.text.replace('[b][color=000000]', "").replace("[/color][/b]", "")
-                LabelTitle.active_label.canvas.before.clear()
-
-                LabelTitle.active_label = self
-                self.active = True
-                self.markup = True
-                self.text = '[b][color=000000]' + self.text + '[/color][/b]'
-                self.canvas.before.clear()
-                with self.canvas.before:
-                    Color(1, 1, 1, 1)
-                    Rectangle(pos=self.pos, size=self.size)
-                    Line(width=1, rectangle=(self.x, self.y, self.width, self.height))
-                return
-
-        # activates flag:  
-        else: 
-            LabelTitle.one_active = True
-            LabelTitle.active_label = self
-
-            self.active = True
-            self.markup = True
-            self.text = '[b][color=000000]' + self.text + '[/color][/b]'
-            self.canvas.before.clear()
-            with self.canvas.before:
-                Color(1, 1, 1, 1)
-                Rectangle(pos=self.pos, size=self.size)
-                Line(width=1, rectangle=(self.x, self.y, self.width, self.height))
-        # joint_data = self.parent.parent.parent.ids["joint_data"]
-        # joint_data.fix_data()
-        # print(joint_data.mouse_pos) # this print doesnt work because you are out of video_canvas object
-
-    def on_size(self, *args):
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(0, 1, 0, 0)
-            Rectangle(pos=self.pos, size=self.size)
 
 class VideoCanvas(ButtonBehavior, Image):
     def __init__(self, **kwargs):
@@ -368,10 +176,11 @@ class VideoCanvas(ButtonBehavior, Image):
 
             print(self.real_bodykeypoints[self.counter][0][i][0])
             print(self.real_bodykeypoints[self.counter][0][i][1])
+            self.show_lines()
             self.show_points()
 
     def show_points(self):
-        self.canvas.after.clear()
+        # self.canvas.after.clear()
         for i, e in enumerate(self.real_bodykeypoints[self.counter][0]):
             self.draw_point(e[0], e[1], color=COLORS[i])
 
@@ -446,23 +255,61 @@ class VideoCanvas(ButtonBehavior, Image):
             if self.texture is None:
                 self.texture = self.video_to_texture(self.frames[0])
 
+
+    def draw_line(self, x1, y1, x2, y2, color):
+        if x1 == 0.0 and y1 == 0.0:
+            return
+        if x2 == 0.0 and y2 == 0.0:
+            return
+        ratio_x = self.texture_size[0] / self.size[0]
+        ratio_y = self.texture_size[1] / self.size[1]
+        x1 = x1 / ratio_x
+        y1 = y1/ ratio_y
+        y1 = self.size[1] - y1
+        x1 = self.pos[0] + x1
+        y1 = self.pos[1] + y1
+
+        x2 = x2 / ratio_x
+        y2 = y2 / ratio_y
+        y2 = self.size[1] - y2
+        x2 = self.pos[0] + x2
+        y2 = self.pos[1] + y2
+
+        with self.canvas.after:
+            r, g, b = color
+            Color(r / 255, g / 255, b / 255, 0.5)
+            Line(points=[x1, y1, x2, y2], width=3, close=True)
         
+    def show_lines(self):
+        self.canvas.after.clear()
+        for i, e in enumerate(BODY_PAIRS):
+            x1, y1, _ = self.real_bodykeypoints[self.counter][0][e[0]]
+            x2, y2, _ = self.real_bodykeypoints[self.counter][0][e[1]]
+            self.draw_line(x1, y1, x2, y2, color=COLORS[e[0]])
+
     def run_openpose(self, frame):
         self.datum.cvInputData = frame
         # aki
         opWrapper.emplaceAndPop([self.datum])
         # aki
         # self.datum.poseNetOutput = self.datum.poseHeatMaps.copy() * 0
-        texture = self.video_to_texture(self.datum.cvOutputData)
+        # texture = self.video_to_texture(self.datum.cvOutputData)
+        texture = self.video_to_texture(frame)
+
+        
         return [texture, self.datum.poseKeypoints.copy()]
 
     def play(self, dt):
         # self.run_openpose(self.frames[self.counter])
         self.texture = self.processed_frames[self.counter]
+        # self.texture = self.frames[self.counter]
+
         joint_data = self.parent.parent.ids['joint_data']
 
         joint_data.display_data()
+        self.show_lines()
         self.show_points()
+        
         # self.texture = self.video_to_texture(self.frames[self.counter])
 
         current_frame_label = self.parent.parent.ids['current_frame']
@@ -482,24 +329,6 @@ class VideoCanvas(ButtonBehavior, Image):
         )
         image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         return image_texture
-
-
-class ExportButton(Widget):
-    def __init__(self, **kwargs):
-        super(ExportButton, self).__init__(**kwargs)
-        btn = Button(text='Export', size_hint=(None, None), height=30, width=100, pos=(5, 330))
-        btn.bind(on_press=self.export)
-        self.add_widget(btn)
-
-    def export(self, instance):
-        video_canvas = self.parent.parent.ids['video_canvas']
-        bodykps = pd.DataFrame(columns=['x','y','confidence'])
-        for frame in video_canvas.real_bodykeypoints:
-            # print(frame[0])
-            bodykp = pd.DataFrame(frame[0], columns=['x','y','confidence'], index= KEYPOINTS)
-            bodykps = bodykps.append(bodykp)
-        bodykps.to_csv('./bodykeypoints/'+ video_canvas.file_selected[-9:-3] + 'csv')
-        print("DONE CSVING :)")
 
 
 class GroundTruthApp(App):

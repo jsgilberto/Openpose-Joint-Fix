@@ -187,6 +187,12 @@
             LabelGrid:
                 id: current_frame
 
+        ResetRealButton:
+            id: reset_real
+        
+        SetLastButton:
+            id: set_last
+        
         BackwardButton:
             id: backward
 
@@ -198,6 +204,16 @@
 
         ForwardButton:
             id: forward
+        
+        Label:
+            id: percentage
+            font_size: 60
+            color: 1, 1, 1, 1
+            size_hint: (None, None)
+            width: 100
+        
+            pos: 1200, 170
+            text: "0.0%"
         
         JointData:
             canvas.before:
